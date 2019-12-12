@@ -8,7 +8,5 @@ marge_sort.cpp(マージソート)
 ### データ構造  
 まだ
 ## 問題復習  
-### atcoder
-まだ
-### codeforces
-まだ
+atcoder
+codeforces
