@@ -27,10 +27,10 @@ struct{
     if(n<0||r<0)return 0;
     return fac[n]*(finv[r]*finv[n-r]%mod)%mod;
   }
-}modComb;
+}modcomb;
 
 int main(){
-  modComb.init(5100,1000000007);
-  std::cout<<modComb.slove(5,2);
+  modcomb.init(5100,1000000007);
+  std::cout<<modcomb.slove(5,2);
   return 0;
 }
