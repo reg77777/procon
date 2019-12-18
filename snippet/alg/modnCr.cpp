@@ -1,3 +1,4 @@
+//O(N)
 #include <iostream>
 #include <vector>
 
