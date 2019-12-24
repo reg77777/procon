@@ -1,3 +1,4 @@
+//https://ei1333.github.io/luzhiled/snippets/graph/bellman-ford.htmlを写した
 //O(VE)
 #include<vector>
 
