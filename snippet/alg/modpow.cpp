@@ -1,15 +1,23 @@
 #include <iostream>
 
-long long int modpow(long long int x,int n){
-  if(n==0)return 1;
-  if(n%2==0){
-    long long int half=modpow(x,n/2);
-    return half*half;
-  }
-  else return modpow(x,n-1)*x;
-}
 
 int main(){
-  std::cout<<modpow(2,10);
+
+  //2^10 mod 1000000007
+  std::cout<<[](auto n,auto x,auto mod)->decltype(n){
+    [=](auto f){
+      return [=](auto... args){
+        return f(f,args...);
+      };
+    }([=](auto f,auto n,auto x)->decltype(n){
+        if(x==0)return 1;
+        if(x%2)return ((n%mod)*(f(f,n,x-1)%mod))%mod;
+        else {
+          auto half=f(f,n,x/2)%mod;
+          return half*half;
+        }
+    })(n,x);
+  }(2,10,1000000007);
+
   return 0;
 }
