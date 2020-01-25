@@ -1,0 +1,20 @@
+全探索
+半分全列挙(二分探索)
+
+// 部分和問題
+// [N個の数から好きなだけ選び、選んだ数の総和がSと等しい場合はあるか]
+
+// 個数制限なし部分和問題
+// [N種類の数から(重複を認め)好きなだけ選び、選んだ数の総和がSと等しい場合はあるか]
+// [N種類の数をそれぞれ好きなだけ取り、取った数の総和がSと等しい場合はあるか]
+
+個数制限なし重み付き部分和問題
+[N種類の数から(重複を認め)好きなだけ選び、選んだ数の総和が(重みがW以下で、かつ)Sと等しい場合はあるか]
+
+実装メモ
+
+列をaとする
+Xより大きい upper_bound(rng(a),X)   [存在性:upper_bound(rng(a),X)!=a.end()]
+X以上       lower_bound(rng(a),X)   [存在性:lower_bound(rng(a),X)!=a.end()]
+X以下       upper_bound(rng(a),X)-1 [存在性:upper_bound(rng(a),X)!=a.begin(),a.end()]
+X未満       lower_bound(rng(a),X)-1 [存在性:lower_bound(rng(a),X)!=a.begin(),a.end()]
