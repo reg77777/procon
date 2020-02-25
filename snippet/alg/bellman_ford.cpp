@@ -1,4 +1,5 @@
-#include<vector>
+#include <vector>
+#include <cstdint>
 
 using namespace std; //‚²‚ß‚ñ‚È‚³‚¢
 
@@ -8,8 +9,8 @@ struct E{
   int cost;
 };
 
-vector<int>bellman_ford(vector<E>g,int n,int s,int inf){
-  vector<int>d(n,inf);
+vector<int_fast64_t>bellman_ford(vector<E>g,int n,int s,int_fast64_t inf){
+  vector<int_fast64_t>d(n,inf);
   d[s]=0;
   for(int i=0;i<n-1;i++){
     for(auto e:g){
@@ -19,7 +20,7 @@ vector<int>bellman_ford(vector<E>g,int n,int s,int inf){
   }
   for(auto e:g){
     if(d[e.from]==inf)continue;
-    if(d[e.from]+e.cost<d[e.to])return vector<int>();
+    if(d[e.from]+e.cost<d[e.to])return vector<int_fast64_t>();
   }
   return d;
 }

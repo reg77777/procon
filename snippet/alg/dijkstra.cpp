@@ -9,7 +9,6 @@ struct E{
   int_fast64_t cost;
 };
 
-
 vector<int_fast64_t>dijkstra(vector<vector<E>>g,int s,int_fast64_t inf){
   vector<int_fast64_t>d(g.size(),inf);
   using T=pair<int_fast64_t,int>;
