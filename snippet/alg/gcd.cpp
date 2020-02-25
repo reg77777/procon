@@ -1,4 +1,8 @@
-long long int gcd(long long int a,long long int b){
-  if(a==0)return b;
-  return gcd(b%a,b);
+#include <cstdint>
+
+using namespace std; //ごめんなさい
+
+int_fast64_t gcd(int_fast64_t a,int_fast64_t b){
+  if(b==0)return a;
+  return gcd(b,a%b);
 }

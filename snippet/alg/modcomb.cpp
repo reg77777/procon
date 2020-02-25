@@ -1,15 +1,16 @@
 #include <vector>
 #include <cstdint>
 
+using namespace std;
 
-template<std::uint_fast64_t mod>
+template<uint_fast64_t mod>
 struct Modcomb{
-  using u64=uint_fast64_t;
-  std::vector<u64>fac; 
-  std::vector<u64>finv; 
-  std::vector<u64>inv;
+  using i64=uint_fast64_t;
+  vector<i64>fac; 
+  vector<i64>finv; 
+  vector<i64>inv;
 
-  Modcomb(u64 max){
+  Modcomb(i64 max){
     this->mod=mod;
     fac.resize(max+1,0);
     finv.resize(max+1,0);
@@ -25,7 +26,7 @@ struct Modcomb{
   }
 
   //nCr=n!/r!(n-r)!
-  u64 slove(u64 n,u64 r){
+  i64 slove(i64 n,i64 r){
     if(n<r)return 0;
     if(n<0||r<0)return 0;
     return fac[n]*(finv[r]*finv[n-r]%mod)%mod;

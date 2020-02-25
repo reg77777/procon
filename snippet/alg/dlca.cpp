@@ -2,14 +2,16 @@
 
 #include<vector>
 
+using namespace std; //ごめんなさい
+
 struct DLCA{
   int LOG;
-  std::vector<int>dep;
-  std::vector<std::vector<int>>g;
-  std::vector<std::vector<int>>table;
+  vector<int>dep;
+  vector<vector<int>>g;
+  vector<vector<int>>table;
 
-  DLCA(std::vector<std::vector<int>>&g):g(g),dep(g.size()),LOG(32-__builtin_clz(g.size())){
-    table.assign(LOG,std::vector<int>(g.size(),-1));
+  DLCA(vector<vector<int>>&g):g(g),dep(g.size()),LOG(32-__builtin_clz(g.size())){
+    table.assign(LOG,vector<int>(g.size(),-1));
   }
 
   //全ての葉の親をtable[0]に記録
@@ -37,7 +39,7 @@ struct DLCA{
 
   int query(int u,int v){
     //深さを揃える
-    if(dep[u]>dep[v])std::swap(u,v);
+    if(dep[u]>dep[v])swap(u,v);
     for(int i=LOG-1;i>=0;i--){
       if(((dep[v]-dep[u])>>i)&1)v=table[i][v];
     }

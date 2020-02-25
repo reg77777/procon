@@ -1,10 +1,12 @@
 #include <iostream>
 
-template<std::uint_fast64_t mod>
+using namespace std; //ごめんなさい
+
+template<uint_fast64_t mod>
 struct modint{
-  using u64=int_fast64_t;
-  u64 a;
-  constexpr modint(const u64 x=0) noexcept:a(x%mod){}
+  using i64=int_fast64_t;
+  i64 a;
+  constexpr modint(const i64 x=0) noexcept:a(x%mod){}
 
   constexpr modint operator+(const modint obj)const noexcept{return modint(*this)+=obj;}
   constexpr modint operator-(const modint obj)const noexcept{return modint(*this)-=obj;}
@@ -37,7 +39,7 @@ struct modint{
   }
   constexpr modint&operator/=(modint obj)noexcept{
     //a^(-1)=a^(mod-2)
-    u64 exp=mod-2;
+    i64 exp=mod-2;
     while(exp){
       if(exp%2)*this*=obj;
       obj*=obj;
@@ -46,11 +48,11 @@ struct modint{
     return *this;
   }
 
-  friend std::ostream&operator<<(std::ostream&os,const modint&obj)noexcept{
+  friend ostream&operator<<(ostream&os,const modint&obj)noexcept{
     return os<<obj.a;
   }
-  friend std::istream&operator<<(std::istream&is,const modint&obj)noexcept{
-    u64 i;
+  friend istream&operator<<(istream&is,const modint&obj)noexcept{
+    i64 i;
     obj=modint<mod>(i);
     return(is);
   }

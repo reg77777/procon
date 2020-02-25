@@ -27,6 +27,8 @@ struct DAC{
 
 
 //分割
+//
+//半分
 template<typename IN>
 std::vector<IN>marge_sort_divide(IN in){
   auto begin=in.begin();
@@ -39,6 +41,8 @@ std::vector<IN>marge_sort_divide(IN in){
 }
 
 //統治
+//
+//要素が1個だったらそのままにする
 template<typename IN>
 std::vector<int>marge_sort_conquer(IN in){
   std::vector<int>res;
@@ -77,7 +81,7 @@ int main(){
   dac.join=marge_sort_join<std::vector<int>>;
 
   //適当な入力
-  std::vector<int>A={32,23,2,45,56,45,61,3,43,5,6,67,7,8,3,5,76,8};
+  std::vector<int>A={32,23,2,45,56,45,61,3,43,5,6,67,7,8,3,5,76,8,5};
   std::vector<int>a=dac.slove(A);
   for(auto it:a)std::cout<<it<<" ";
   std::cout<<std::endl;
