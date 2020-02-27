@@ -15,6 +15,7 @@ struct Flow{
   Flow(vector<vector<edge>>g){
     int N=g.size();
     used.resize(N,false);
+    G.resize(N);
     for(int i=0;i<N;i++){
       for(auto it:g[i])add_edge(i,it.to,it.cap);
     }
@@ -35,7 +36,7 @@ struct Flow{
   int dfs(int s,int g,int val){
     if(s==g)return val;
     used[s]=true;
-    for(auto e:G[s]){
+    for(auto&e:G[s]){
       if(!used[e.to]&&e.cap>0){
         int d=dfs(e.to,g,min(val,e.cap));
         if(d>0){
