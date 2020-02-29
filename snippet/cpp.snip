@@ -1,4 +1,189 @@
-snippet bellman_ford.cpp 	
+snippet segtree.cpp 	
+	
+	template<typename T=int_fast64_t>
+	struct segT{
+	  vector<T>v;
+	  using F=function<T(T,T)>;
+	  F f;
+	  T e;
+	  int sz;
+	  segT(int n){
+	    f=[](T a,T b){return a+b;};
+	    e=0;
+	    sz=1;while(sz<n)sz*=2;
+	    v.resize(2*sz-1,e);
+	  }
+	  segT(int n,T e,F f):e(e),f(f){
+	    sz=1;while(sz<n)sz*=2;
+	    v.resize(2*sz-1,e);
+	  }
+	  void add(int x,T val){
+	    x+=sz-1;
+	    v[x]=f(v[x],val);
+	    while(x>0){
+	      x=(x-1)/2;
+	      v[x]=f(v[2*x+1],v[2*x+2]);
+	    }
+	  }
+	  void update(int x,T val){
+	    x+=sz-1;
+	    v[x]=val;
+	    while(x>0){
+	      x=(x-1)/2;
+	      v[x]=f(v[2*x+1],v[2*x+2]);
+	    }
+	  }
+	  T sum(int a,int b,int l=0,int r=-1,int k=0){
+	    if(r==-1)r=sz;
+	    if(a<=l&&r<=b)return v[k];
+	    if(b<=l||r<=a)return e;
+	    T lval=sum(a,b,l,(l+r)/2,2*k+1);
+	    T rval=sum(a,b,(l+r)/2,r,2*k+2);
+	    return f(lval,rval);
+	  }
+	};
+snippet sm.cpp 	
+	
+	struct SM{
+	  vector<vector<int>>m;
+	  int N;
+	  SM(vector<vector<int>>m):m(m),N(m.size()){};
+	  SM operator+(SM obj){
+	    SM res(vector<vector<int>>(N,vector<int>(N,0)));
+	    for(int i=0;i<N;i++){
+	      for(int j=0;j<N;j++){
+	        res.m[i][j]=this->m[i][j]+obj.m[i][j];
+	      }
+	    }
+	    return res;
+	  }
+	  SM operator*(SM obj){
+	    SM res(vector<vector<int>>(N,vector<int>(N,0)));
+	    for(int i=0;i<N;i++){
+	      for(int j=0;j<N;j++){
+	        for(int k=0;k<N;k++){
+	          res.m[i][j]+=this->m[i][k]*obj.m[k][j];
+	        }
+	      }
+	    }
+	    return res;
+	  }
+	  SM pow(int n){
+	    if(n==0){
+	      vector<vector<int>>e(N,vector<int>(N,0));
+	      for(int i=0;i<N;i++)e[i][i]=1;
+	      return SM(e);
+	    }
+	    SM res(vector<vector<int>>(N,vector<int>(N)));
+	    if(n%2)return (*this)*pow(n-1);
+	    else{
+	      SM half=pow(n/2);
+	      return half*half;
+	    }
+	  }
+	};
+snippet uf.cpp 	
+	
+	struct UF{
+	  vector<int>p; //p[i]=$B%N!<%I(Bi$B$N?F(B
+	  vector<int>r; //rank[i]=$B%N!<%I(Bi$B$N%i%s%/(B
+	  UF(int sz){
+	    r.resize(sz,0);
+	    p.resize(sz);
+	    for(int i=0;i<sz;i++)p[i]=i;
+	  }
+	  void u(int x,int y){ //1
+	    x=root(x);
+	    y=root(y);
+	    if(r[x]==r[y])r[x]++;
+	    if(r[x]>r[y])p[y]=x;
+	    else p[x]=y;
+	  }
+	  int root(int x){
+	    if(p[x]==x)return x;
+	    return root(x=p[x]);
+	  }
+	  bool isu(int x,int y){ //2
+	    return root(x)==root(y);
+	  }
+	};
+snippet dp/lis.cpp 	
+	
+	template<typename T,T inf>
+	int lis(vector<T>v){
+	  int N=v.size();
+	  vector<T>dp(N,inf);
+	  for(int i=0;i<N;i++){
+	    int l=-1,r=N,m;
+	    while(r-l>1){
+	      m=(r+l)/2;
+	      if(dp[m]<v[i])l=m;
+	      else r=m;
+	    }
+	    dp[r]=min(v[i],dp[r]);
+	  }
+	  int res=0;
+	  for(int i=0;i<N;i++)if(dp[i]!=inf)res=i;
+	  return res+1;
+	}
+	
+	
+	int main(){
+	  int N;
+	  cin>>N;
+	  vector<int>A(N);
+	  for(int i=0;i<N;i++)cin>>A[i];
+	  cout<<lis<int,INT_MAX>(A)<<endl;
+	  return 0;
+	}
+snippet flow/fordfulkerson.cpp 	
+	
+	
+	struct edge{
+	  int to,cap,rev;
+	};
+	
+	struct Flow{
+	  vector<vector<edge>>G;
+	  vector<bool>used;
+	  Flow(vector<vector<edge>>g){
+	    int N=g.size();
+	    used.resize(N,false);
+	    G.resize(N);
+	    for(int i=0;i<N;i++){
+	      for(auto it:g[i])add_edge(i,it.to,it.cap);
+	    }
+	  };
+	  void add_edge(int from,int to,int cap){
+	    G[from].push_back({to,cap,(int)G[to].size()});
+	    G[to].push_back({from,0,(int)G[from].size()-1});
+	  }
+	  int max_flow(int s,int g){
+	    int flow=0;
+	    while(true){
+	      fill(used.begin(),used.end(),false);
+	      int f=dfs(s,g,INF);
+	      if(f==0)return flow;
+	      flow+=f;
+	    }
+	  }
+	  int dfs(int s,int g,int val){
+	    if(s==g)return val;
+	    used[s]=true;
+	    for(auto&e:G[s]){
+	      if(!used[e.to]&&e.cap>0){
+	        int d=dfs(e.to,g,min(val,e.cap));
+	        if(d>0){
+	          e.cap-=d;
+	          G[e.to][e.rev].cap+=d;
+	          return d;
+	        }
+	      }
+	    }
+	    return 0;
+	  }
+	};
+snippet graph/bellman_ford.cpp 	
 	
 	struct E{
 	  int to;
@@ -21,7 +206,7 @@ snippet bellman_ford.cpp
 	  }
 	  return d;
 	}
-snippet dijkstra.cpp 	
+snippet graph/dijkstra.cpp 	
 	
 	struct E{
 	  int to;
@@ -51,141 +236,14 @@ snippet dijkstra.cpp
 	  }
 	  return d;
 	}
-snippet dlca.cpp 	
-	
-	
-	struct DLCA{
-	  int LOG;
-	  vector<int>dep;
-	  vector<vector<int>>g;
-	  vector<vector<int>>table;
-	
-	  DLCA(vector<vector<int>>&g):g(g),dep(g.size()),LOG(32-__builtin_clz(g.size())){
-	    table.assign(LOG,vector<int>(g.size(),-1));
-	  }
-	
-	  //全ての葉の親をtable[0]に記録
-	  void dfs(int idx,int par,int d){
-	    //idxの一つ上の親
-	    table[0][idx]=par;
-	    //根からの距離
-	    dep[idx]=d;
-	    for(auto to:g[idx]){
-	      if(to!=par)dfs(to,idx,d+1);
-	    }
-	  }
-	
-	  void build(){
-	    dfs(0,-1,0);
-	    //LOG=floor(log(g.size()));
-	    //ダブリング
-	    for(int k=0;k+1<LOG;k++){
-	      for(int i=0;i<table[k].size();i++){
-	        if(table[k][i]==-1)table[k+1][i]=-1;
-	        else table[k+1][i]=table[k][table[k][i]];
-	      }
-	    }
-	  }
-	
-	  int query(int u,int v){
-	    //深さを揃える
-	    if(dep[u]>dep[v])swap(u,v);
-	    for(int i=LOG-1;i>=0;i--){
-	      if(((dep[v]-dep[u])>>i)&1)v=table[i][v];
-	    }
-	    if(u==v)return u;
-	    //同じになるまでちょっとずつ近づく
-	    for(int i=LOG-1;i>=0;i--){
-	      if(table[i][u]!=table[i][v]){
-	        u=table[i][u];
-	        v=table[i][v];
-	      }
-	    }
-	    return table[0][u];
-	  }
-	
-	};
-snippet fordfulkerson.cpp 	
-	
-	
-	struct edge{
-	  int to,cap,rev;
-	};
-	
-	struct Flow{
-	  vector<vector<edge>>G;
-	  vector<bool>used;
-	  Flow(vector<vector<edge>>g){
-	    int N=g.size();
-	    used.resize(N,false);
-	    for(int i=0;i<N;i++){
-	      for(auto it:g[i])add_edge(i,it.to,it.cap);
-	    }
-	  };
-	  void add_edge(int from,int to,int cap){
-	    G[from].push_back({to,cap,(int)G[to].size()});
-	    G[to].push_back({from,0,(int)G[from].size()-1});
-	  }
-	  int max_flow(int s,int g){
-	    int flow=0;
-	    while(true){
-	      fill(used.begin(),used.end(),false);
-	      int f=dfs(s,g,INF);
-	      if(f==0)return flow;
-	      flow+=f;
-	    }
-	  }
-	  int dfs(int s,int g,int val){
-	    if(s==g)return val;
-	    used[s]=true;
-	    for(auto e:G[s]){
-	      if(!used[e.to]&&e.cap>0){
-	        int d=dfs(e.to,g,min(val,e.cap));
-	        if(d>0){
-	          e.cap-=d;
-	          G[e.to][e.rev].cap+=d;
-	          return d;
-	        }
-	      }
-	    }
-	    return 0;
-	  }
-	};
-snippet gcd.cpp 	
+snippet math/gcd.cpp 	
 	
 	
 	int_fast64_t gcd(int_fast64_t a,int_fast64_t b){
 	  if(b==0)return a;
 	  return gcd(b,a%b);
 	}
-snippet lca.cpp 	
-	
-	struct LCA{
-	  int r; 
-	  vector<int>par;
-	  vector<int>d;
-	  vector<vector<int>>g;
-	  LCA(vector<vector<int>>g,int r):g(g),r(r){
-	    int N=g.size();
-	    par.resize(N,0);
-	    d.resize(N,0);
-	    dfs(r,-1,0);
-	  }
-	  void dfs(int x,int p,int val){
-	    par[x]=p;
-	    d[x]=val;
-	    for(auto it:g[x]){
-	      if(it!=p)dfs(it,x,val+1);
-	    }
-	  }
-	  int query(int x,int y){
-	    while(d[x]>d[y])x=par[x];
-	    while(d[x]<d[y])y=par[y];
-	    while(x!=y)x=par[x],y=par[y];
-	    return x;
-	  }
-	};
-snippet lcm.cpp 	
+snippet math/lcm.cpp 	
 	
 	int_fast64_t gcd(int_fast64_t a,int_fast64_t b){
 	  if(b==0)return a;
@@ -195,7 +253,7 @@ snippet lcm.cpp
 	int_fast64_t lcm(int_fast64_t a,int_fast64_t b){
 	  return a*b/gcd(a,b);
 	}
-snippet modcomb.cpp 	
+snippet math/modcomb.cpp 	
 	
 	template<uint_fast64_t m>
 	struct Mcomb{
@@ -225,7 +283,7 @@ snippet modcomb.cpp
 	    return f[n]*(finv[r]*finv[n-r]%m)%m;
 	  }
 	};
-snippet modint.cpp 	
+snippet math/modint.cpp 	
 	
 	template<uint_fast64_t mod>
 	struct modint{
@@ -282,7 +340,7 @@ snippet modint.cpp
 	    return(is);
 	  }
 	};
-snippet modpow.cpp 	
+snippet math/modpow.cpp 	
 	
 	template<uint_fast64_t m>
 	int_fast64_t mpow(int_fast64_t x,int_fast64_t n){
@@ -294,72 +352,149 @@ snippet modpow.cpp
 	    return (half*half)%m;
 	  }
 	}
-snippet segtree.cpp 	
+snippet math/prime.cpp 	
 	
-	template<typename T=int_fast64_t>
-	struct segT{
-	  vector<T>v;
-	  using F=function<T(T,T)>;
-	  F f;
-	  T e;
+	bool isprime(int_fast64_t x){
+	  for(int i=0;i*i<=x;i++){
+	    if(x%i==0)return false;
+	  }
+	  return true;
+	}
+	
+	map<int_fast64_t,int>prime_factor(int_fast64_t x){
+	  map<int_fast64_t,int>res;
+	  for(int_fast64_t i=2;i*i<=x;i++){
+	    while(x%i==0){
+	      res[i]++;
+	      x/=i;
+	    }
+	  }
+	  if(x!=1)res[x]=1;
+	  return res;
+	}
+	
+	vector<bool>eratosthenes(int n){
+	  vector<bool>res(n+1,true);
+	  res[0]=res[1]=false;
+	  for(int i=2;i<=n;i++){
+	    if(res[i])for(int j=i+i;j<=n;j+=i){
+	      res[j]=false;
+	    }
+	  }
+	  return res;
+	}
+snippet others/doubling.cpp 	
+	
+	struct Doubling{
+	  vector<vector<int>>table;
+	  int log;
 	  int sz;
-	  segT(int n){
-	    f=[](T a,T b){return a+b;};
-	    e=0;
-	    sz=1;while(sz<n)sz*=2;
-	    v.resize(2*sz-1,e);
+	  //sz:要素数 lim:最大の数
+	  Doubling(int sz,int64_t lim):sz(sz),log(64-__builtin_clzll(lim)){
+	    table.resize(sz,vector<int>(log,-1));
 	  }
-	  segT(int n,T e,F f):e(e),f(f){
-	    sz=1;while(sz<n)sz*=2;
-	    v.resize(2*sz-1,e);
+	  void set_next(int now,int next){
+	    table[now][0]=next;
 	  }
-	  void add(int x,T val){
-	    x+=sz-1;
-	    v[x]=f(v[x],val);
-	    while(x>0){
-	      x=(x-1)/2;
-	      v[x]=f(v[2*x+1],v[2*x+2]);
+	  void build(){
+	    for(int j=0;j<log-1;j++){
+	      for(int i=0;i<sz;i++){
+	        if(table[i][j]==-1)table[i][j+1]=-1;
+	        else table[i][j+1]=table[table[i][j]][j]; //iの2^j先の2^j先->iの2^(j+1)先
+	      }
 	    }
 	  }
-	  void update(int x,T val){
-	    x+=sz-1;
-	    v[x]=val;
-	    while(x>0){
-	      x=(x-1)/2;
-	      v[x]=f(v[2*x+1],v[2*x+2]);
+	  int query(int x,int64_t t){
+	    for(int i=log-1;i>=0;i--){
+	      if((t>>i)&1)x=table[x][i];
 	    }
-	  }
-	  T sum(int a,int b,int l=0,int r=-1,int k=0){
-	    if(r==-1)r=sz;
-	    if(a<=l&&r<=b)return v[k];
-	    if(b<=l||r<=a)return e;
-	    T lval=sum(a,b,l,(l+r)/2,2*k+1);
-	    T rval=sum(a,b,(l+r)/2,r,2*k+2);
-	    return f(lval,rval);
+	    return x;
 	  }
 	};
-snippet uf.cpp 	
+snippet tree/dlca.cpp 	
 	
-	struct UF{
-	  vector<int>p; //p[i]=$B%N!<%I(Bi$B$N?F(B
-	  vector<int>r; //rank[i]=$B%N!<%I(Bi$B$N%i%s%/(B
-	  UF(int sz){
-	    r.resize(sz,0);
-	    p.resize(sz);
-	    for(int i=0;i<sz;i++)p[i]=i;
+	struct Doubling{
+	  vector<vector<int>>table;
+	  int log;
+	  int sz;
+	  //sz:要素数 lim:最大の数
+	  Doubling(int sz,int64_t lim):sz(sz),log(64-__builtin_clzll(lim)){
+	    table.resize(sz,vector<int>(log,-1));
 	  }
-	  void u(int x,int y){ //1
-	    x=root(x);
-	    y=root(y);
-	    if(r[x]==r[y])r[x]++;
-	    if(r[x]>r[y])p[y]=x;
-	    else p[x]=y;
+	  void set_next(int now,int next){
+	    table[now][0]=next;
 	  }
-	  int root(int x){
-	    if(p[x]==x)return x;
-	    return root(x=p[x]);
+	  void build(){
+	    for(int j=0;j<log-1;j++){
+	      for(int i=0;i<sz;i++){
+	        if(table[i][j]==-1)table[i][j+1]=-1;
+	        else table[i][j+1]=table[table[i][j]][j]; //iの2^j先の2^j先->iの2^(j+1)先
+	      }
+	    }
 	  }
-	  bool isu(int x,int y){ //2
-	    return root(x)==root(y);
+	};
+	
+	struct DLCA{
+	  int r;
+	  vector<int>par;
+	  vector<int>dep;
+	  vector<vector<int>>g;
+	  Doubling*d;
+	  DLCA(vector<vector<int>>g,int r):g(g),r(r){
+	    int N=g.size();
+	    par.resize(N,0);
+	    dep.resize(N,0);
+	    d=new Doubling(N,N);
+	    dfs(r,-1,0);
+	    for(int i=0;i<N;i++)d->set_next(i,par[i]);
+	    d->build();
+	  }
+	  void dfs(int x,int p,int val){
+	    par[x]=p;
+	    dep[x]=val;
+	    for(auto it:g[x]){
+	      if(it!=p)dfs(it,x,val+1);
+	    }
+	  }
+	  int query(int x,int y){
+	    if(dep[x]<dep[y])swap(x,y);
+	    for(int i=d->log-1;i>=0;i--){
+	      if(((dep[x]-dep[y])>>i)&1)x=d->table[x][i];
+	    }
+	    if(x==y)return x;
+	    for(int i=d->log-1;i>=0;i--){
+	      if(d->table[x][i]!=d->table[y][i]){
+	        x=d->table[x][i];
+	        y=d->table[y][i];
+	      }
+	    }
+	    return d->table[x][0];
+	  }
+	};
+snippet tree/lca.cpp 	
+	
+	struct LCA{
+	  int r; 
+	  vector<int>par;
+	  vector<int>d;
+	  vector<vector<int>>g;
+	  LCA(vector<vector<int>>g,int r):g(g),r(r){
+	    int N=g.size();
+	    par.resize(N,0);
+	    d.resize(N,0);
+	    dfs(r,-1,0);
+	  }
+	  void dfs(int x,int p,int val){
+	    par[x]=p;
+	    d[x]=val;
+	    for(auto it:g[x]){
+	      if(it!=p)dfs(it,x,val+1);
+	    }
+	  }
+	  int query(int x,int y){
+	    while(d[x]>d[y])x=par[x];
+	    while(d[x]<d[y])y=par[y];
+	    while(x!=y)x=par[x],y=par[y];
+	    return x;
 	  }
 	};
