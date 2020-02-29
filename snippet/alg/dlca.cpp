@@ -1,57 +1,63 @@
-//https://ei1333.github.io/luzhiled/snippets/tree/doubling-lowest-common-ancestor.htmlを写しました
+#include <vector>
+#include <cstdint>
 
-#include<vector>
+using namespace std;
 
-using namespace std; //ごめんなさい
+struct Doubling{
+  vector<vector<int>>table;
+  int log;
+  int sz;
+  //sz:要素数 lim:最大の数
+  Doubling(int sz,int64_t lim):sz(sz),log(64-__builtin_clzll(lim)){
+    table.resize(sz,vector<int>(log,-1));
+  }
+  void set_next(int now,int next){
+    table[now][0]=next;
+  }
+  void build(){
+    for(int j=0;j<log-1;j++){
+      for(int i=0;i<sz;i++){
+        if(table[i][j]==-1)table[i][j+1]=-1;
+        else table[i][j+1]=table[table[i][j]][j]; //iの2^j先の2^j先->iの2^(j+1)先
+      }
+    }
+  }
+};
 
 struct DLCA{
-  int LOG;
+  int r;
+  vector<int>par;
   vector<int>dep;
   vector<vector<int>>g;
-  vector<vector<int>>table;
-
-  DLCA(vector<vector<int>>&g):g(g),dep(g.size()),LOG(32-__builtin_clz(g.size())){
-    table.assign(LOG,vector<int>(g.size(),-1));
+  Doubling*d;
+  DLCA(vector<vector<int>>g,int r):g(g),r(r){
+    int N=g.size();
+    par.resize(N,0);
+    dep.resize(N,0);
+    d=new Doubling(N,N);
+    dfs(r,-1,0);
+    for(int i=0;i<N;i++)d->set_next(i,par[i]);
+    d->build();
   }
-
-  //全ての葉の親をtable[0]に記録
-  void dfs(int idx,int par,int d){
-    //idxの一つ上の親
-    table[0][idx]=par;
-    //根からの距離
-    dep[idx]=d;
-    for(auto to:g[idx]){
-      if(to!=par)dfs(to,idx,d+1);
+  void dfs(int x,int p,int val){
+    par[x]=p;
+    dep[x]=val;
+    for(auto it:g[x]){
+      if(it!=p)dfs(it,x,val+1);
     }
   }
-
-  void build(){
-    dfs(0,-1,0);
-    //LOG=floor(log(g.size()));
-    //ダブリング
-    for(int k=0;k+1<LOG;k++){
-      for(int i=0;i<table[k].size();i++){
-        if(table[k][i]==-1)table[k+1][i]=-1;
-        else table[k+1][i]=table[k][table[k][i]];
+  int query(int x,int y){
+    if(dep[x]<dep[y])swap(x,y);
+    for(int i=d->log-1;i>=0;i--){
+      if(((dep[x]-dep[y])>>i)&1)x=d->table[x][i];
+    }
+    if(x==y)return x;
+    for(int i=d->log-1;i>=0;i--){
+      if(d->table[x][i]!=d->table[y][i]){
+        x=d->table[x][i];
+        y=d->table[y][i];
       }
     }
+    return d->table[x][0];
   }
-
-  int query(int u,int v){
-    //深さを揃える
-    if(dep[u]>dep[v])swap(u,v);
-    for(int i=LOG-1;i>=0;i--){
-      if(((dep[v]-dep[u])>>i)&1)v=table[i][v];
-    }
-    if(u==v)return u;
-    //同じになるまでちょっとずつ近づく
-    for(int i=LOG-1;i>=0;i--){
-      if(table[i][u]!=table[i][v]){
-        u=table[i][u];
-        v=table[i][v];
-      }
-    }
-    return table[0][u];
-  }
-
 };
