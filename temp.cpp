@@ -1,6 +1,6 @@
 #include <bits/stdc++.h> 
 
-using namespace std; //ごめんなさい
+using namespace std;
 using ll=long long;
 using ull=unsigned long long;
 using pii=pair<int,int>;
