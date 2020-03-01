@@ -1,4 +1,4 @@
-snippet segtree.cpp 	
+snippet segtree 	
 	
 	template<typename T=int_fast64_t>
 	struct segT{
@@ -42,7 +42,7 @@ snippet segtree.cpp
 	    return f(lval,rval);
 	  }
 	};
-snippet sm.cpp 	
+snippet sm 	
 	
 	struct SM{
 	  vector<vector<int>>m;
@@ -82,7 +82,7 @@ snippet sm.cpp
 	    }
 	  }
 	};
-snippet uf.cpp 	
+snippet uf 	
 	
 	struct UF{
 	  vector<int>p; //p[i]=ノードiの親
@@ -107,7 +107,7 @@ snippet uf.cpp
 	    return root(x)==root(y);
 	  }
 	};
-snippet dp/lis.cpp 	
+snippet dp_lis 	
 	
 	template<typename T,T inf>
 	int lis(vector<T>v){
@@ -136,7 +136,7 @@ snippet dp/lis.cpp
 	  cout<<lis<int,INT_MAX>(A)<<endl;
 	  return 0;
 	}
-snippet flow/fordfulkerson.cpp 	
+snippet flow_fordfulkerson 	
 	
 	
 	struct edge{
@@ -183,7 +183,7 @@ snippet flow/fordfulkerson.cpp
 	    return 0;
 	  }
 	};
-snippet graph/bellman_ford.cpp 	
+snippet graph_bellman_ford 	
 	
 	struct E{
 	  int to;
@@ -206,7 +206,7 @@ snippet graph/bellman_ford.cpp
 	  }
 	  return d;
 	}
-snippet graph/dijkstra.cpp 	
+snippet graph_dijkstra 	
 	
 	struct E{
 	  int to;
@@ -236,14 +236,14 @@ snippet graph/dijkstra.cpp
 	  }
 	  return d;
 	}
-snippet math/gcd.cpp 	
+snippet math_gcd 	
 	
 	
 	int_fast64_t gcd(int_fast64_t a,int_fast64_t b){
 	  if(b==0)return a;
 	  return gcd(b,a%b);
 	}
-snippet math/lcm.cpp 	
+snippet math_lcm 	
 	
 	int_fast64_t gcd(int_fast64_t a,int_fast64_t b){
 	  if(b==0)return a;
@@ -253,7 +253,7 @@ snippet math/lcm.cpp
 	int_fast64_t lcm(int_fast64_t a,int_fast64_t b){
 	  return a*b/gcd(a,b);
 	}
-snippet math/modcomb.cpp 	
+snippet math_modcomb 	
 	
 	template<uint_fast64_t m>
 	struct Mcomb{
@@ -283,7 +283,7 @@ snippet math/modcomb.cpp
 	    return f[n]*(finv[r]*finv[n-r]%m)%m;
 	  }
 	};
-snippet math/modint.cpp 	
+snippet math_modint 	
 	
 	template<uint_fast64_t mod>
 	struct modint{
@@ -340,7 +340,7 @@ snippet math/modint.cpp
 	    return(is);
 	  }
 	};
-snippet math/modpow.cpp 	
+snippet math_modpow 	
 	
 	template<uint_fast64_t m>
 	int_fast64_t mpow(int_fast64_t x,int_fast64_t n){
@@ -352,7 +352,7 @@ snippet math/modpow.cpp
 	    return (half*half)%m;
 	  }
 	}
-snippet math/prime.cpp 	
+snippet math_prime 	
 	
 	bool isprime(int_fast64_t x){
 	  for(int i=0;i*i<=x;i++){
@@ -383,7 +383,7 @@ snippet math/prime.cpp
 	  }
 	  return res;
 	}
-snippet others/doubling.cpp 	
+snippet others_doubling 	
 	
 	struct Doubling{
 	  vector<vector<int>>table;
@@ -411,7 +411,7 @@ snippet others/doubling.cpp
 	    return x;
 	  }
 	};
-snippet tree/dlca.cpp 	
+snippet tree_dlca 	
 	
 	struct Doubling{
 	  vector<vector<int>>table;
@@ -471,7 +471,7 @@ snippet tree/dlca.cpp
 	    return d->table[x][0];
 	  }
 	};
-snippet tree/lca.cpp 	
+snippet tree_lca 	
 	
 	struct LCA{
 	  int r; 
