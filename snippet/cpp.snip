@@ -236,6 +236,35 @@ snippet graph_dijkstra
 	  }
 	  return d;
 	}
+snippet graph_prim 	
+	
+	struct E{
+	  int to;
+	  int_fast64_t cost;
+	};
+	
+	vector<vector<E>>prim(vector<vector<E>>g){
+	  vector<vector<E>>res(g.size());
+	  using T=tuple<int_fast64_t,int,int>;
+	  using C=vector<T>;
+	  using Cmp=greater<T>;
+	  priority_queue<T,C,Cmp>q;
+	  q.push(T(0,0,-1));
+	  vector<bool>used(g.size(),false);
+	  while(!q.empty()){
+	    int_fast64_t cost=get<0>(q.top());
+	    int now=get<1>(q.top());
+	    int par=get<2>(q.top());
+	    q.pop();
+	    if(used[now])continue;
+	    used[now]=true;
+	    if(par!=-1)res[par].push_back({now,cost});
+	    for(auto e:g[now]){
+	      q.push(T(e.cost,e.to,now));
+	    }
+	  }
+	  return res;
+	}
 snippet math_gcd 	
 	
 	
@@ -411,6 +440,48 @@ snippet others_doubling
 	    return x;
 	  }
 	};
+snippet string_RH 	
+	
+	vector<int> RH(string S,string T){
+	  int SN=S.size();
+	  int TN=T.size();
+	  int_fast64_t b=9973; 
+	  vector<int_fast64_t>mod={1000000007LL,1000000009LL,1000000021LL}; 
+	  int M=mod.size();
+	  vector<int_fast64_t>s(M,0);
+	  vector<int_fast64_t>t(M,0);
+	  vector<int_fast64_t>a(M,1);
+	  for(int i=0;i<TN;i++){
+	    for(int j=0;j<M;j++){
+	      a[j]=(a[j]*b)%mod[j];
+	    }
+	  }
+	  for(int i=0;i<TN;i++){
+	    for(int j=0;j<M;j++){
+	      s[j]=((s[j]*b)%mod[j]+S[i])%mod[j];
+	    }
+	  }
+	  for(int i=0;i<TN;i++){
+	    for(int j=0;j<M;j++){
+	      t[j]=((t[j]*b)%mod[j]+T[i])%mod[j];
+	    }
+	  }
+	  vector<int>res;
+	  bool ok=true;
+	  for(int i=0;i<M;i++)if(s[i]!=t[i])ok=false;
+	  if(ok)res.push_back(0);
+	  for(int i=0;i+TN<SN;i++){
+	    ok=true;
+	    for(int j=0;j<M;j++){
+	      s[j]=((s[j]*b)%mod[j]-(S[i]*a[j])%mod[j])%mod[j];
+	      if(s[j]<0)s[j]+=mod[j];
+	      s[j]=(s[j]+S[i+TN])%mod[j];
+	      if(s[j]!=t[j])ok=false;
+	    }
+	    if(ok)res.push_back(i+1);
+	  }
+	  return res;
+	}
 snippet tree_dlca 	
 	
 	struct Doubling{
