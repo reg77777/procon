@@ -1,12 +1,9 @@
 #include <vector>
+#include <bits/stdc++.h>
 
 using namespace std; //ごめんなさい
 
 //Union Find
-//
-//0~N-1で添字付けられたノードに対して以下のクエリを実行する
-//1. xとyを同じグループにする
-//2. xとyが同じグループに属しているか返す
 struct UF{
   vector<int>p; //p[i]=ノードiの親
   vector<int>r; //rank[i]=ノードiのランク
@@ -19,8 +16,8 @@ struct UF{
     x=root(x);
     y=root(y);
     if(r[x]==r[y])r[x]++;
-    if(r[x]>r[y])p[y]=x;
-    else p[x]=y;
+    if(r[x]>r[y])p[y]=x,r[x]+=r[y];
+    else p[x]=y,r[y]+=r[x];
   }
   int root(int x){
     if(p[x]==x)return x;
@@ -28,5 +25,8 @@ struct UF{
   }
   bool isu(int x,int y){ //2
     return root(x)==root(y);
+  }
+  int size(int x){
+    return r[root(x)];
   }
 };
