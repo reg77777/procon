@@ -116,8 +116,8 @@ snippet uf
 	    x=root(x);
 	    y=root(y);
 	    if(r[x]==r[y])r[x]++;
-	    if(r[x]>r[y])p[y]=x;
-	    else p[x]=y;
+	    if(r[x]>r[y])p[y]=x,r[x]+=r[y];
+	    else p[x]=y,r[y]+=r[x];
 	  }
 	  int root(int x){
 	    if(p[x]==x)return x;
@@ -125,6 +125,9 @@ snippet uf
 	  }
 	  bool isu(int x,int y){ //2
 	    return root(x)==root(y);
+	  }
+	  int size(int x){
+	    return r[root(x)];
 	  }
 	};
 snippet dp_lis 	
@@ -300,7 +303,7 @@ snippet math_lcm
 	}
 	
 	int_fast64_t lcm(int_fast64_t a,int_fast64_t b){
-	  return a*b/gcd(a,b);
+	  return a/gcd(a,b)*b;
 	}
 snippet math_modcomb 	
 	

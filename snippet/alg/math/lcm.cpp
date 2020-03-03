@@ -9,5 +9,5 @@ int_fast64_t gcd(int_fast64_t a,int_fast64_t b){
 }
 
 int_fast64_t lcm(int_fast64_t a,int_fast64_t b){
-  return a*b/gcd(a,b);
+  return a/gcd(a,b)*b;
 }
