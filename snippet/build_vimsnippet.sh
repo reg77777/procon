@@ -3,6 +3,8 @@
 rm cpp.snip
 touch cpp.snip
 
+echo "include others.snip" >> cpp.snip
+
 #データ構造のスニペット作成
 for var in ds/*.cpp
 do
