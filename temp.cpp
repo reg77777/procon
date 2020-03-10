@@ -9,7 +9,7 @@ using pii=pair<int,int>;
 #define MOD 1000000007
 #define rng(a) a.begin(),a.end()
 #define rrng(a) a.end(),a.begin()
-#define rep(i,N) for(int i=0;i<N;i++)
+#define endl "\n"
 
 int main(){
   ios::sync_with_stdio(false);
