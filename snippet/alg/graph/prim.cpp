@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <tuple>
 
-using namespace std; //ごめんなさい
+using namespace std;
 
 struct E{
   int to;

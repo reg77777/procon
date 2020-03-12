@@ -1,6 +1,6 @@
 #include <vector>
 
-using namespace std; //ごめんなさい
+using namespace std;
 
 //0-index
 struct BIT{

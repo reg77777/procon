@@ -1,6 +1,6 @@
 #include <iostream>
 
-using namespace std; //ごめんなさい
+using namespace std;
 
 template<uint_fast64_t mod>
 struct modint{

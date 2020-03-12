@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <map>
 
-using namespace std; //ごめんなさい
+using namespace std;
 
 //素因数分解
 map<int_fast64_t,int>prime_factor(int_fast64_t x){

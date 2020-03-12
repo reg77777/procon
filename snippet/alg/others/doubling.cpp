@@ -1,7 +1,7 @@
 #include <vector>
 #include <cstdint>
 
-using namespace std; //ごめんなさい
+using namespace std;
 
 struct Doubling{
   vector<vector<int>>table;

@@ -1,7 +1,7 @@
 #include <vector>
 #include <bits/stdc++.h>
 
-using namespace std; //ごめんなさい
+using namespace std;
 
 //TODO 比較演算も受け取りたい
 template<typename T,T inf>

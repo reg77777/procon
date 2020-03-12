@@ -1,7 +1,7 @@
 #include <vector>
 #include <cstdint>
 
-using namespace std; //‚²‚ß‚ñ‚È‚³‚¢
+using namespace std;
 
 struct E{
   int to;

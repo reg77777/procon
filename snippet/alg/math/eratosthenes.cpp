@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <map>
 
-using namespace std; //ごめんなさい
+using namespace std;
 
 //エラストテネスの篩
 vector<bool>eratosthenes(int n){

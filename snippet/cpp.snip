@@ -1,5 +1,5 @@
 include others.snip
-snippet bit 	
+snippet BIT 	
 	
 	struct BIT{
 	  vector<int>node;
@@ -19,12 +19,44 @@ snippet bit
 	    return sum(r)-sum(l);
 	  }
 	};
-snippet cumulative_sum 	
+snippet UF 	
 	
-	struct CSum{
+	struct UnionFind{
+	
+	  vector<int>par;
+	  vector<int>rank;
+	
+	  UnionFind(int size){
+	    rank.resize(size,1);
+	    par.resize(size);
+	    for(int i=0;i<size;i++)par[i]=i;
+	  }
+	
+	  void unite(int node1,int node2){
+	    if(is_connected(node1,node2))return;
+	    node1=find(node1);
+	    node2=find(node2);
+	    if(rank[node1]>rank[node2])swap(node1,node2);
+	    par[node1]=node2,rank[node2]+=rank[node1];
+	  }
+	  int find(int node){
+	    if(par[node]==node)return node;
+	    return par[node]=find(par[node]);
+	  }
+	  bool is_connected(int node1,int node2){
+	    return find(node1)==find(node2);
+	  }
+	  int size(int node){
+	    return rank[find(node)];
+	  }
+	
+	};
+snippet cumulativeSum 	
+	
+	struct Sum{
 	  vector<int_fast64_t>node;
 	  template<typename T>
-	  CSum(vector<T>v){
+	  Sum(vector<T>v){
 	    node.resize(v.size(),0);
 	    for(int i=0;i<v.size();i++)node[i+1]=node[i]+v[i];
 	  }
@@ -79,7 +111,7 @@ snippet segtree
 	    return f(lval,rval);
 	  }
 	};
-snippet sm 	
+snippet squareMatrix 	
 	
 	struct SM{
 	  vector<vector<int>>m;
@@ -117,34 +149,6 @@ snippet sm
 	      SM half=pow(n/2);
 	      return half*half;
 	    }
-	  }
-	};
-snippet uf 	
-	
-	struct UF{
-	  vector<int>p; //p[i]=ノードiの親
-	  vector<int>r; //rank[i]=ノードiのランク
-	  UF(int sz){
-	    r.resize(sz,1);
-	    p.resize(sz);
-	    for(int i=0;i<sz;i++)p[i]=i;
-	  }
-	  void u(int x,int y){ //1
-	    if(isu(x,y))return;
-	    x=root(x);
-	    y=root(y);
-	    if(r[x]>r[y])p[y]=x,r[x]+=r[y];
-	    else p[x]=y,r[y]+=r[x];
-	  }
-	  int root(int x){
-	    if(p[x]==x)return x;
-	    return root(x=p[x]);
-	  }
-	  bool isu(int x,int y){ //2
-	    return root(x)==root(y);
-	  }
-	  int size(int x){
-	    return r[root(x)];
 	  }
 	};
 snippet dp_lis 	
@@ -318,7 +322,6 @@ snippet math_eratosthenes
 	  return res;
 	}
 snippet math_gcd 	
-	
 	
 	int_fast64_t gcd(int_fast64_t a,int_fast64_t b){
 	  if(b==0)return a;

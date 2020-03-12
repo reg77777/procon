@@ -1,6 +1,6 @@
 #include <cstdint>
 
-using namespace std; //ごめんなさい
+using namespace std;
 
 template<uint_fast64_t m>
 int_fast64_t mpow(int_fast64_t x,int_fast64_t n){

@@ -1,12 +1,12 @@
 #include <vector>
 #include <cstdint>
 
-using namespace std; //ごめんなさい
+using namespace std;
 
-struct CSum{
+struct Sum{
   vector<int_fast64_t>node;
   template<typename T>
-  CSum(vector<T>v){
+  Sum(vector<T>v){
     node.resize(v.size(),0);
     for(int i=0;i<v.size();i++)node[i+1]=node[i]+v[i];
   }

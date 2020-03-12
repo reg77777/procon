@@ -2,7 +2,7 @@
 #include <string>
 #include <cstdint>
 
-using namespace std; //‚²‚ß‚ñ‚È‚³‚¢
+using namespace std;
 
 vector<int> RH(string S,string T){
   int SN=S.size();

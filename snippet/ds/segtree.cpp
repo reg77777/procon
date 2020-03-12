@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <functional>
 
-using namespace std; //‚²‚ß‚ñ‚È‚³‚¢
+using namespace std;
 
 template<typename T=int_fast64_t>
 struct segT{

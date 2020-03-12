@@ -1,6 +1,6 @@
 #include <vector>
 
-using namespace std; //ごめんなさい
+using namespace std;
 
 //square matrix
 struct SM{

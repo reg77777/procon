@@ -1,9 +1,8 @@
-//むずい
 #include <vector>
 
 #define INF 1000000000
 
-using namespace std; //ごめんなさい
+using namespace std;
 
 struct edge{
   int to,cap,rev;
