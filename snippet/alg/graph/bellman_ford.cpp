@@ -1,26 +1,13 @@
-#include <vector>
-#include <cstdint>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-struct E{
-  int to;
-  int from;
-  int cost;
-};
+struct E{int to,from,cost;};
 
-vector<int_fast64_t>bellman_ford(vector<E>g,int n,int s,int_fast64_t inf){
-  vector<int_fast64_t>d(n,inf);
+template<typename T,T inf>
+vector<T>bellman_ford(vector<E>&g,int s,int sz){
+  vector<T>d(sz,inf);
   d[s]=0;
-  for(int i=0;i<n-1;i++){
-    for(auto e:g){
-      if(d[e.from]==inf)continue;
-      d[e.to]=min(d[e.to],d[e.from]+e.cost);
-    }
-  }
-  for(auto e:g){
-    if(d[e.from]==inf)continue;
-    if(d[e.from]+e.cost<d[e.to])return vector<int_fast64_t>();
-  }
+  for(int i=0;i<sz-1;i++)for(auto e:g)if(d[e.from]!=inf)d[e.to]=min(d[e.to],d[e.from]+e.cost);
+  for(auto e:g)if(d[e.from]!=inf&&d[e.from]+e.cost<d[e.to])return vector<T>();
   return d;
 }
