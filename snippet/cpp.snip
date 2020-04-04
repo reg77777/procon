@@ -152,33 +152,14 @@ snippet squareMatrix
 	  }
 	};
 snippet dp_lis 	
-	
 	template<typename T,T inf>
-	int lis(vector<T>v){
+	int lis(vector<T>&v){
 	  int N=v.size();
 	  vector<T>dp(N,inf);
-	  for(int i=0;i<N;i++){
-	    int l=-1,r=N,m;
-	    while(r-l>1){
-	      m=(r+l)/2;
-	      if(dp[m]<v[i])l=m;
-	      else r=m;
-	    }
-	    dp[r]=min(v[i],dp[r]);
-	  }
+	  for(int i=0;i<N;i++)*lower_bound(dp.begin(),dp.end(),v[i])=v[i];
 	  int res=0;
 	  for(int i=0;i<N;i++)if(dp[i]!=inf)res=i;
 	  return res+1;
-	}
-	
-	
-	int main(){
-	  int N;
-	  cin>>N;
-	  vector<int>A(N);
-	  for(int i=0;i<N;i++)cin>>A[i];
-	  cout<<lis<int,INT_MAX>(A)<<endl;
-	  return 0;
 	}
 snippet flow_fordfulkerson 	
 	
@@ -228,50 +209,45 @@ snippet flow_fordfulkerson
 	  }
 	};
 snippet graph_bellman_ford 	
-	
+	template<typename T>
 	struct E{
-	  int to;
-	  int from;
-	  int cost;
+	  int from,to;
+	  T cost;
 	};
 	
-	vector<int_fast64_t>bellman_ford(vector<E>g,int n,int s,int_fast64_t inf){
-	  vector<int_fast64_t>d(n,inf);
+	template<typename T>
+	vector<T>bellman_ford(vector<E<T>>&g,int s,int sz){
+	  T inf=numeric_limits<T>::max();
+	  vector<T>d(sz,inf);
 	  d[s]=0;
-	  for(int i=0;i<n-1;i++){
-	    for(auto e:g){
-	      if(d[e.from]==inf)continue;
-	      d[e.to]=min(d[e.to],d[e.from]+e.cost);
-	    }
-	  }
-	  for(auto e:g){
-	    if(d[e.from]==inf)continue;
-	    if(d[e.from]+e.cost<d[e.to])return vector<int_fast64_t>();
-	  }
+	  for(int i=0;i<sz-1;i++)for(auto e:g)if(d[e.from]!=inf)d[e.to]=min(d[e.to],d[e.from]+e.cost);
+	  for(auto e:g)if(d[e.from]!=inf&&d[e.from]+e.cost<d[e.to])return vector<T>();
 	  return d;
 	}
 snippet graph_dijkstra 	
-	
+	template<typename T>
 	struct E{
 	  int to;
-	  int_fast64_t cost;
+	  T cost;
 	};
 	
-	vector<int_fast64_t>dijkstra(vector<vector<E>>g,int s,int_fast64_t inf){
-	  vector<int_fast64_t>d(g.size(),inf);
-	  using T=pair<int_fast64_t,int>;
-	  using C=vector<T>;
-	  using Cmp=greater<T>;
-	  priority_queue<T,C,Cmp>q; 
+	template<typename T>
+	vector<T>dijkstra(vector<vector<E<T>>>g,int s){
+	  T inf=numeric_limits<T>::max();
+	  vector<T>d(g.size(),inf);
+	  using Type=pair<T,int>;
+	  using Container=vector<Type>;
+	  using Cmp=greater<Type>;
+	  priority_queue<Type,Container,Cmp>q; 
 	  d[s]=0;
 	  q.push({d[s],s});
 	  while(!q.empty()){
-	    int_fast64_t cost=q.top().first;
+	    T cost=q.top().first;
 	    int from=q.top().second;
 	    q.pop();
 	    if(d[from]!=cost)continue;
 	    for(auto e:g[from]){
-	      int_fast64_t next_cost=e.cost+cost;
+	      T next_cost=e.cost+cost;
 	      if(d[e.to]>next_cost){
 	        d[e.to]=next_cost;
 	        q.push({d[e.to],e.to});
@@ -281,7 +257,6 @@ snippet graph_dijkstra
 	  return d;
 	}
 snippet graph_prim 	
-	
 	struct E{
 	  int to;
 	  int_fast64_t cost;
@@ -309,6 +284,35 @@ snippet graph_prim
 	  }
 	  return res;
 	}
+snippet math_GCD 	
+	
+	int_fast64_t gcd(int_fast64_t a,int_fast64_t b){
+	  if(b==0)return a;
+	  return gcd(b,a%b);
+	}
+snippet math_LCM 	
+	
+	int_fast64_t gcd(int_fast64_t a,int_fast64_t b){
+	  if(b==0)return a;
+	  return gcd(b,a%b);
+	}
+	
+	int_fast64_t lcm(int_fast64_t a,int_fast64_t b){
+	  return a/gcd(a,b)*b;
+	}
+snippet math_divisor 	
+	
+	vector<int64_t>divisor(int64_t n) {
+	  vector<int64_t>ret;
+	  for(int64_t i=1;i*i<=n;i++){
+	    if(n%i==0){
+	      ret.push_back(i);
+	      if(i*i!=n)ret.push_back(n/i);
+	    }
+	  }
+	  sort(begin(ret),end(ret));
+	  return ret;
+	}
 snippet math_eratosthenes 	
 	
 	vector<bool>eratosthenes(int n){
@@ -320,22 +324,6 @@ snippet math_eratosthenes
 	    }
 	  }
 	  return res;
-	}
-snippet math_gcd 	
-	
-	int_fast64_t gcd(int_fast64_t a,int_fast64_t b){
-	  if(b==0)return a;
-	  return gcd(b,a%b);
-	}
-snippet math_lcm 	
-	
-	int_fast64_t gcd(int_fast64_t a,int_fast64_t b){
-	  if(b==0)return a;
-	  return gcd(b,a%b);
-	}
-	
-	int_fast64_t lcm(int_fast64_t a,int_fast64_t b){
-	  return a/gcd(a,b)*b;
 	}
 snippet math_modcomb 	
 	
@@ -527,7 +515,7 @@ snippet string_RH
 	  }
 	  return res;
 	}
-snippet tree_dlca 	
+snippet tree_DLCA 	
 	
 	struct Doubling{
 	  vector<vector<int>>table;
@@ -587,7 +575,7 @@ snippet tree_dlca
 	    return d->table[x][0];
 	  }
 	};
-snippet tree_lca 	
+snippet tree_LCA 	
 	
 	struct LCA{
 	  int r; 
@@ -613,4 +601,9 @@ snippet tree_lca
 	    while(x!=y)x=par[x],y=par[y];
 	    return x;
 	  }
+	};
+snippet tree_RMQLCA 	
+snippet tree_vertexEulerTour 	
+	
+	struct EulerTour{
 	};

@@ -1,8 +1,4 @@
-#include <vector>
-#include <queue>
-#include <cstdint>
-#include <tuple>
-
+#include<bits/stdc++.h>
 using namespace std;
 
 struct E{
