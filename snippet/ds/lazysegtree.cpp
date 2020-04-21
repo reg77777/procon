@@ -1,6 +1,5 @@
 #include <vector>
 #include <cstdint>
-#include <functional>
 
 using namespace std;
 
