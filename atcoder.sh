@@ -11,7 +11,7 @@ echo "$size個のファイルを生成"
 files=''
 for i in `seq $size`
 do
-  cp temp.cpp $i.cpp
+  cp atcoder.cpp $i.cpp
   files=${files}${i}.cpp
   files=${files}' '
   echo $i

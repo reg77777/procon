@@ -3,7 +3,6 @@
 
 using namespace std;
 
-//Union Find
 struct UnionFind{
 
   vector<int>par;

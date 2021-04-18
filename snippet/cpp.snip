@@ -67,6 +67,35 @@ snippet cumulativeSum
 	    return node[r]-node[l];
 	  }
 	};
+snippet dualsegtree 	
+	
+	struct DualSegT{
+	  int sz;
+	  vector<int>v;
+	  DualSegT(int n){
+	    sz=1;while(sz<n)sz*=2;
+	    v.resize(2*sz-1,0);
+	  }
+	  void add(int a,int b,int x){
+	    add_(a,b,x,0,0,sz);
+	  }
+	  void add_(int a,int b,int x,int k,int l,int r){
+	    if(b<=l||r<=a)return;
+	    if(a<=l&&r<=b){
+	      v[k]+=x;
+	      return;
+	    }
+	    add_(a,b,x,2*k+1,l,(l+r)/2);
+	    add_(a,b,x,2*k+2,(l+r)/2,r);
+	  }
+	  int get(int x){
+	    x+=sz-1;
+	    int res=0;
+	    for(int i=x;i>0;i=(i-1)/2)res+=v[i];
+	    res+=v[0];
+	    return res;
+	  }
+	};
 snippet lazysegtree 	
 	
 	struct LazySegT{
@@ -121,46 +150,42 @@ snippet lazysegtree
 	};
 snippet segtree 	
 	
-	template<typename T=int_fast64_t>
-	struct segT{
-	  vector<T>v;
-	  using F=function<T(T,T)>;
-	  F f;
-	  T e;
+	struct SegTree{
+	  vector<int>v;
 	  int sz;
-	  segT(int n){
-	    f=[](T a,T b){return a+b;};
-	    e=0;
+	  SegTree(int n){
 	    sz=1;while(sz<n)sz*=2;
-	    v.resize(2*sz-1,e);
+	    v.resize(2*sz-1,0);
 	  }
-	  segT(int n,T e,F f):e(e),f(f){
-	    sz=1;while(sz<n)sz*=2;
-	    v.resize(2*sz-1,e);
+	  SegTree(vector<int>a){
+	    sz=1;while(sz<a.size())sz*=2;
+	    v.resize(2*sz-1,0);
+	    for(int i=0;i<a.size();i++)v[i+sz-1]=a[i];
+	    for(int i=sz-2;i>=0;i--)v[i]=v[2*i+1]+v[2*i+2];
 	  }
-	  void add(int x,T val){
+	  void add(int x,int val){
 	    x+=sz-1;
-	    v[x]=f(v[x],val);
+	    v[x]=v[x]+val;
 	    while(x>0){
 	      x=(x-1)/2;
-	      v[x]=f(v[2*x+1],v[2*x+2]);
+	      v[x]=v[2*x+1]+v[2*x+2];
 	    }
 	  }
-	  void update(int x,T val){
+	  void update(int x,int val){
 	    x+=sz-1;
 	    v[x]=val;
 	    while(x>0){
 	      x=(x-1)/2;
-	      v[x]=f(v[2*x+1],v[2*x+2]);
+	      v[x]=v[2*x+1]+v[2*x+2];
 	    }
 	  }
-	  T sum(int a,int b,int l=0,int r=-1,int k=0){
+	  int sum(int a,int b,int l=0,int r=-1,int k=0){
 	    if(r==-1)r=sz;
 	    if(a<=l&&r<=b)return v[k];
-	    if(b<=l||r<=a)return e;
-	    T lval=sum(a,b,l,(l+r)/2,2*k+1);
-	    T rval=sum(a,b,(l+r)/2,r,2*k+2);
-	    return f(lval,rval);
+	    if(b<=l||r<=a)return 0;
+	    int lval=sum(a,b,l,(l+r)/2,2*k+1);
+	    int rval=sum(a,b,(l+r)/2,r,2*k+2);
+	    return lval+rval;
 	  }
 	};
 snippet squareMatrix 	
@@ -377,6 +402,31 @@ snippet math_eratosthenes
 	  }
 	  return res;
 	}
+snippet math_fft 	
+	
+	vector<complex<double>>fft(vector<complex<double>>a,bool reverse=false){
+	  int N=a.size();
+	  double circle=2*3.1415926535;
+	  if(reverse)circle*=-1;
+	  if(N==1)return a;
+	  vector<complex<double>>b(N/2),c(N/2),res(N);
+	  for(int i=0;i<N;i++){
+	    if(i%2==0)b[i/2]=a[i];
+	    if(i%2==1)c[i/2]=a[i];
+	  }
+	  b=fft(b,reverse);
+	  c=fft(c,reverse);
+	  for(int i=0;i<N;i++)
+	    res[i]=b[i%(N/2)]+c[i%(N/2)]
+	      *exp(complex<double>(0,-circle*i/N));
+	  return res;
+	}
+	
+	vector<complex<double>>ifft(vector<complex<double>>a){
+	  vector<complex<double>>res=fft(a,true);
+	  for(auto&it:res)it/=complex<double>(a.size());
+	  return res;
+	}
 snippet math_modcomb 	
 	
 	template<uint_fast64_t m>
@@ -425,7 +475,7 @@ snippet math_modint
 	    if(a>=mod)a-=mod;
 	    return *this;
 	  }
-	  constexpr modint&operator++(const modint obj)noexcept{
+	  constexpr modint&operator++()noexcept{
 	    a++;
 	    if(a>=mod)a-=mod;
 	    return *this;
@@ -435,7 +485,7 @@ snippet math_modint
 	    a-=obj.a;
 	    return *this;
 	  }
-	  constexpr modint&operator--(const modint obj)noexcept{
+	  constexpr modint&operator--()noexcept{
 	    if(a<1)a+=mod;
 	    a--;
 	    return *this;
@@ -466,15 +516,54 @@ snippet math_modint
 	};
 snippet math_modpow 	
 	
-	template<uint_fast64_t m>
-	int_fast64_t mpow(int_fast64_t x,int_fast64_t n){
-	  using i64=int_fast64_t;
+	template<int m>
+	int modpow(int x,int n){
 	  if(n==0)return 1;
-	  if(n%2)return ((x%m)*(mpow<m>(x,n-1)%m))%m;
+	  if(n%2)return ((x%m)*(modpow<m>(x,n-1)%m))%m;
 	  else {
-	    i64 half=mpow<m>(x,n/2)%m;
+	    int half=modpow<m>(x,n/2)%m;
 	    return (half*half)%m;
 	  }
+	}
+snippet math_ntt 	
+	
+	
+	template<int m>
+	int modpow(int x,int n){
+	  if(n==0)return 1;
+	  if(n%2)return ((x%m)*(modpow<m>(x,n-1)%m))%m;
+	  else {
+	    int half=modpow<m>(x,n/2)%m;
+	    return (half*half)%m;
+	  }
+	}
+	
+	auto mpow=modpow<MOD2>;
+	
+	vector<int>ntt(vector<int>a,bool reverse=false){
+	  int N=a.size();
+	  if(N==1)return a;
+	  vector<int>b(N/2),c(N/2),res(N);
+	  for(int i=0;i<N;i++){
+	    if(i%2==0)b[i/2]=a[i];
+	    if(i%2==1)c[i/2]=a[i];
+	  }
+	  b=ntt(b,reverse);
+	  c=ntt(c,reverse);
+	  int Zeta=1;
+	  int gu=mpow(3,(MOD2-1)/N);
+	  if(reverse)gu=mpow(gu,MOD2-2);
+	  for(int i=0;i<N;i++){
+	    res[i]=(b[i%(N/2)]+(c[i%(N/2)]*Zeta)%MOD2)%MOD2;
+	    (Zeta*=gu)%=MOD2;
+	  }
+	  return res;
+	}
+	
+	vector<int>intt(vector<int>a){
+	  vector<int>res=ntt(a,true);
+	  for(auto&it:res)it/=a.size();
+	  return res;
 	}
 snippet math_prime_factor 	
 	

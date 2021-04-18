@@ -18,7 +18,7 @@ struct modint{
     if(a>=mod)a-=mod;
     return *this;
   }
-  constexpr modint&operator++(const modint obj)noexcept{
+  constexpr modint&operator++()noexcept{
     a++;
     if(a>=mod)a-=mod;
     return *this;
@@ -28,7 +28,7 @@ struct modint{
     a-=obj.a;
     return *this;
   }
-  constexpr modint&operator--(const modint obj)noexcept{
+  constexpr modint&operator--()noexcept{
     if(a<1)a+=mod;
     a--;
     return *this;
